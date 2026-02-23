@@ -4,43 +4,403 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Green Testing</title>
+
   <style>
-    body { font-family: Arial, sans-serif; max-width: 900px; margin: 60px auto; padding: 0 18px; line-height: 1.6; }
-    .badge { display:inline-block; padding:6px 10px; border:1px solid #ddd; border-radius:999px; font-size:13px; }
-    h1 { font-size: 44px; margin: 14px 0 10px; }
-    p { font-size: 18px; }
-    .card { border:1px solid #eee; border-radius:14px; padding:18px; margin-top:18px; }
-    .muted { color:#666; }
+    :root{
+      --bg: #050a06;
+      --panel: rgba(12, 22, 14, 0.72);
+      --panel2: rgba(10, 18, 12, 0.55);
+      --text: #e9ffe9;
+      --muted: rgba(233, 255, 233, 0.72);
+
+      /* “hırçın yeşil” aksan */
+      --g1: #18ff6d;
+      --g2: #00d66a;
+      --g3: #00ffb3;
+      --danger: #ff4d4d;
+
+      --border: rgba(24, 255, 109, 0.22);
+      --shadow: rgba(0, 0, 0, 0.45);
+    }
+
+    *{ box-sizing: border-box; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 500px at 10% 10%, rgba(24,255,109,0.18), transparent 60%),
+        radial-gradient(900px 500px at 85% 15%, rgba(0,255,179,0.12), transparent 55%),
+        radial-gradient(900px 600px at 50% 95%, rgba(0,214,106,0.10), transparent 60%),
+        linear-gradient(180deg, #040704, var(--bg));
+      min-height: 100vh;
+    }
+
+    .wrap{
+      max-width: 1020px;
+      margin: 0 auto;
+      padding: 56px 18px 70px;
+    }
+
+    .topbar{
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      gap: 12px;
+      margin-bottom: 26px;
+    }
+
+    .badge{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: linear-gradient(180deg, rgba(24,255,109,0.12), rgba(0,0,0,0));
+      box-shadow: 0 12px 40px var(--shadow);
+      font-weight: 650;
+      letter-spacing: 0.2px;
+      user-select:none;
+    }
+    .dot{
+      width:10px;
+      height:10px;
+      border-radius:50%;
+      background: var(--g1);
+      box-shadow: 0 0 18px rgba(24,255,109,0.75);
+    }
+
+    .nav{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+    }
+
+    .pill{
+      text-decoration:none;
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(233,255,233,0.14);
+      background: rgba(0,0,0,0.18);
+      transition: transform .12s ease, border-color .12s ease, background .12s ease;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+    .pill:hover{
+      transform: translateY(-1px);
+      border-color: rgba(24,255,109,0.32);
+      background: rgba(24,255,109,0.08);
+    }
+
+    .hero{
+      position:relative;
+      border-radius: 22px;
+      border: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(24,255,109,0.10), rgba(0,0,0,0.10));
+      box-shadow: 0 28px 70px var(--shadow);
+      overflow:hidden;
+      padding: 28px 22px;
+    }
+
+    .hero::before{
+      content:"";
+      position:absolute;
+      inset: -2px;
+      background:
+        radial-gradient(800px 250px at 30% 0%, rgba(24,255,109,0.22), transparent 60%),
+        radial-gradient(700px 240px at 75% 15%, rgba(0,255,179,0.18), transparent 60%);
+      pointer-events:none;
+      filter: blur(2px);
+    }
+
+    .hero-inner{
+      position:relative;
+      display:grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+      align-items: start;
+    }
+
+    @media (max-width: 860px){
+      .hero-inner{ grid-template-columns: 1fr; }
+      .nav{ justify-content:flex-start; }
+    }
+
+    h1{
+      margin: 8px 0 10px;
+      font-size: 44px;
+      line-height: 1.08;
+      letter-spacing: -0.6px;
+    }
+
+    .tagline{
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.6;
+      max-width: 60ch;
+    }
+
+    .cta-row{
+      display:flex;
+      gap: 12px;
+      flex-wrap:wrap;
+      margin-top: 14px;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      text-decoration:none;
+      font-weight: 750;
+      letter-spacing: 0.2px;
+      border: 1px solid rgba(24,255,109,0.35);
+      background: linear-gradient(135deg, rgba(24,255,109,0.20), rgba(0,255,179,0.08));
+      color: var(--text);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.35);
+      transition: transform .12s ease, border-color .12s ease, background .12s ease;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      border-color: rgba(24,255,109,0.55);
+      background: linear-gradient(135deg, rgba(24,255,109,0.26), rgba(0,255,179,0.12));
+    }
+
+    .btn.secondary{
+      border-color: rgba(233,255,233,0.18);
+      background: rgba(0,0,0,0.18);
+      font-weight: 650;
+    }
+    .btn.secondary:hover{
+      border-color: rgba(24,255,109,0.30);
+      background: rgba(24,255,109,0.08);
+    }
+
+    .arrow{
+      width: 18px;
+      height: 18px;
+      border-radius: 6px;
+      display:inline-grid;
+      place-items:center;
+      background: rgba(24,255,109,0.14);
+      border: 1px solid rgba(24,255,109,0.25);
+      font-size: 14px;
+    }
+
+    .panel{
+      position:relative;
+      border-radius: 18px;
+      border: 1px solid rgba(233,255,233,0.12);
+      background: var(--panel);
+      padding: 16px 16px;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.28);
+    }
+
+    .panel h3{
+      margin: 6px 0 8px;
+      font-size: 16px;
+      letter-spacing: 0.2px;
+    }
+
+    .kpi{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .k{
+      border-radius: 14px;
+      border: 1px solid rgba(24,255,109,0.18);
+      background: var(--panel2);
+      padding: 12px 12px;
+    }
+    .k .num{
+      font-size: 18px;
+      font-weight: 850;
+      letter-spacing: -0.2px;
+    }
+    .k .lbl{
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+    @media (max-width: 900px){ .grid{ grid-template-columns: 1fr; } }
+
+    .card{
+      border: 1px solid rgba(24,255,109,0.18);
+      border-radius: 18px;
+      background: rgba(0,0,0,0.18);
+      padding: 16px 16px;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.25);
+    }
+    .card h2{
+      margin: 2px 0 8px;
+      font-size: 18px;
+      letter-spacing: 0.2px;
+    }
+    .card p{
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.55;
+    }
+
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      margin-top: 10px;
+    }
+    .chip{
+      font-size: 12.5px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(233,255,233,0.14);
+      background: rgba(0,0,0,0.20);
+      color: rgba(233,255,233,0.86);
+      white-space:nowrap;
+    }
+    .chip strong{ color: var(--text); }
+
+    .footer{
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(233,255,233,0.10);
+      color: rgba(233,255,233,0.62);
+      font-size: 13px;
+      display:flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap:wrap;
+    }
+    .smalllink{
+      color: rgba(233,255,233,0.78);
+      text-decoration:none;
+      border-bottom: 1px dotted rgba(24,255,109,0.35);
+    }
+    .smalllink:hover{ border-bottom-color: rgba(24,255,109,0.65); }
   </style>
 </head>
+
 <body>
-  <span class="badge">🌱 Green Testing</span>
-  <h1>Diagnose before you discard.</h1>
-  <p class="muted">
-    A sustainable approach to assessment: analyze, improve, recalibrate, and reuse test items instead of throwing them away.
-  </p>
+  <div class="wrap">
 
-  <div class="card">
-    <h2>What we do</h2>
-    <p>
-      We help programs build healthier item banks through diagnostic item analysis, revision workflows, and monitoring across administrations.
-    </p>
+    <div class="topbar">
+      <div class="badge">
+        <span class="dot"></span>
+        <span>GREEN TESTING</span>
+        <span style="color:rgba(233,255,233,0.55); font-weight:600;">/ recycle measurement</span>
+      </div>
+
+      <div class="nav">
+        <a class="pill" href="#principles">Principles</a>
+        <a class="pill" href="#tool">Green Test Checker</a>
+        <a class="pill" href="#psychometrics">Psychometrics</a>
+      </div>
+    </div>
+
+    <section class="hero">
+      <div class="hero-inner">
+        <div>
+          <h1>Diagnose before you discard.</h1>
+          <p class="tagline">
+            A <b>sustainable</b> approach to language assessment: treat items as maintainable measurement instruments.
+            Detect what’s broken, <b>revise</b>, <b>recalibrate</b>, and <b>reuse</b>—instead of throwing items away.
+          </p>
+
+          <div class="cta-row" id="tool">
+            <a class="btn" href="https://w6zgicyzkpxvfdpzxq8pw3.streamlit.app/" target="_blank" rel="noopener">
+              <span class="arrow">↗</span>
+              Open Green Test Checker
+            </a>
+            <a class="btn secondary" href="#principles">
+              <span class="arrow">⟳</span>
+              Recycling mindset
+            </a>
+          </div>
+
+          <div class="chips">
+            <span class="chip"><strong>Recycling</strong> item banks</span>
+            <span class="chip"><strong>Upcycling</strong> weak distractors</span>
+            <span class="chip"><strong>Efficiency</strong> before new item writing</span>
+            <span class="chip"><strong>Psychometrics</strong> as a repair kit</span>
+          </div>
+        </div>
+
+        <aside class="panel" id="psychometrics">
+          <h3>What gets measured gets improved</h3>
+          <div class="kpi">
+            <div class="k">
+              <div class="num">r<sub>pbis</sub> • p</div>
+              <div class="lbl">Discrimination & difficulty signals for “repair vs replace”.</div>
+            </div>
+            <div class="k">
+              <div class="num">KR-20 • SEM</div>
+              <div class="lbl">Reliability & precision monitoring across administrations.</div>
+            </div>
+            <div class="k">
+              <div class="num">Distractor scan</div>
+              <div class="lbl">Spot non-functioning options & ambiguous keys.</div>
+            </div>
+            <div class="k">
+              <div class="num">Cycle & reuse</div>
+              <div class="lbl">Revision → retest → evidence-based reuse.</div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="grid" id="principles">
+      <div class="card">
+        <h2>Recycling</h2>
+        <p>
+          Don’t discard items at the first sign of noise. Diagnose: key issues, wording, distractors, construct mismatch.
+          Then repair and track performance.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>Upcycling</h2>
+        <p>
+          Turn “weak” items into stronger instruments: better stems, sharper distractors, cleaner construct alignment,
+          improved cognitive demand.
+        </p>
+      </div>
+
+      <div class="card">
+        <h2>Efficiency</h2>
+        <p>
+          Save time and budget by extending item lifespan while protecting validity and reliability.
+          Reduce item waste. Increase evidence.
+        </p>
+      </div>
+    </section>
+
+    <div class="footer">
+      <div>© GreenTesting • Sustainable language assessment</div>
+      <div>
+        <a class="smalllink" href="https://w6zgicyzkpxvfdpzxq8pw3.streamlit.app/" target="_blank" rel="noopener">
+          Launch Green Test Checker
+        </a>
+      </div>
+    </div>
+
   </div>
-
-<div class="card">
-  <h2>Green Test Checker</h2>
-  <p>
-    Run diagnostic item and distractor analysis in seconds.
-  </p>
-  <p>
-    <a class="btn" href="https://w6zgicyzkpxvfdpzxq8pw3.streamlit.app/" target="_blank" rel="noopener">
-      Open Green Test Checker
-    </a>
-  </p>
-</div>
-
-  <p class="muted" style="margin-top:28px;">
-    © GreenTesting
-  </p>
 </body>
 </html>
